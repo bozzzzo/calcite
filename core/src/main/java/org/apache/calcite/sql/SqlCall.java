@@ -97,7 +97,13 @@ public abstract class SqlCall extends SqlNode {
     if (leftPrec > operator.getLeftPrec()
         || (operator.getRightPrec() <= rightPrec && (rightPrec != 0))
         || writer.isAlwaysUseParentheses() && isA(SqlKind.EXPRESSION)) {
-      final SqlWriter.Frame frame = writer.startList("(", ")");
+      final SqlWriter.Frame frame;
+      if (operator instanceof SqlUnnestOperator) {
+        frame = writer.startList(SqlWriter.FrameTypeEnum.SIMPLE);
+      } else {
+        frame = writer.startList("(", ")");
+      }
+
       dialect.unparseCall(writer, this, 0, 0);
       writer.endList(frame);
     } else {
