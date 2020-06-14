@@ -9092,6 +9092,12 @@ public class SqlParserTest {
       final String actual = sqlNode.toSqlString(transform).getSql();
       assertEquals(expected, linux(actual));
 
+      // Parse the expected result and unparse again.
+      SqlNode sqlNode42;
+      sqlNode42 = parseStmtAndHandleEx(expected, dialect2::configureParser, parser -> { });
+      final String sql42 = sqlNode42.toSqlString(transform).getSql();
+      assertEquals(expected, linux(sql42));
+
       // Unparse again in Calcite dialect (which we can parse), and
       // minimal parentheses.
       final String sql1 = sqlNode.toSqlString(simple()).getSql();
